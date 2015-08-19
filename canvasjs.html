@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="jquery.ajax-cross-origin.min.js"></script>
+<script>
+
+</script>
+	<script type="text/javascript">
+	window.onload = function () {
+		var x=0 , y=10, xVal, yVal, dps, chart, updateInterval, dataLength, request1, request2;
+		
+	
+
+    var updateChart = function (count) {
+			count = count || 1;
+			// count is number of times loop runs to generate random dataPoints.
+			request1 = $.getJSON("x.json",function(data){
+    	x = JSON.parse(data.n);
+    	// console.log(x);
+    });
+	request2 = $.getJSON("y.json",function(data){
+    	y = JSON.parse(data.n);
+    	// console.log(y);
+    });
+			
+			// for (var j = 0; j < count; j++) {	
+ 				// yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+ 				dps.push({
+ 					x: x,
+ 					y: y
+ 				});
+ 				xVal++;
+ 			// };
+ 			if (dps.length > dataLength)
+			{
+				dps.shift();				
+			}
+			
+			chart.render();		
+
+		};
+
+	// Your problem was asynchronous AJAX Get requests
+    $.when(request1,request2).done(function(){
+    	xVal = x // I dont think you need to reassign this ;)
+    	yVal = y
+		console.log(typeof x)
+		dps = []; // dataPoints
+
+		chart = new CanvasJS.Chart("chartContainer",{
+			title :{
+				text: "Temperature Data"
+			},			
+			data: [{
+				type: "line",
+				dataPoints: dps 
+			}]
+		});	
+		// console.log(xVal);
+		updateInterval = 200;
+		dataLength = 500; // number of dataPoints visible at any point
+
+		
+
+		// generates first set of dataPoints
+		updateChart(dataLength); 
+
+		// update chart after specified time. 
+		
+    	});
+    setInterval(function(){updateChart()}, updateInterval); 
+    
+
+	}
+	</script>
+	<script type="text/javascript" src="canvasjs.min.js"></script>
+</head>
+<body>
+	<div id="chartContainer" style="height: 300px; width:100%;">
+	</div>
+</body>
+</html>

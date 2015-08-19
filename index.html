@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="jquery.ajax-cross-origin.min.js"></script>
+<script>
+
+</script>
+	<script type="text/javascript">
+	window.onload = function () {
+		$(document).ready(function(){
+			var x, y, xVal=0, yVal;
+	// $.get('x.txt',function(data){
+ //    	x = data;
+ //    	console.log(x);
+ //    });
+	// $.get('y.txt',function(data){
+ //    	y = data;
+ //    	console.log(y);
+ //    });
+
+    	// x = parseInt(x);
+		// console.log(typeof x)
+		var dps = []; // dataPoints
+
+		var chart = new CanvasJS.Chart("chartContainer",{
+			title :{
+				text: "Temperature Data"
+			},			
+			data: [{
+				type: "line",
+				dataPoints: dps 
+			}]
+		});
+
+		// var xVal = parseInt(x);
+		// var yVal = parseInt(y);	
+		// console.log(valueOf(parseInt('200')));
+		var updateInterval = 100;
+		var dataLength = 50; // number of dataPoints visible at any point
+		// $.getJSON("x.json",function(data){
+  //   	xVal = JSON.parse(data.n);
+  //   	// console.log(x);
+  //   });
+	
+		var updateChart = function (count) {
+			count = count || 1;
+			// count is number of times loop runs to generate random dataPoints.
+			
+			// for (var j = 0; j < count; j++) {	
+ 				// yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+ 				$.getJSON("y.json",function(data){
+			    	yVal = JSON.parse(data.n);
+			    	// console.log(y);
+			    });
+ 				dps.push({
+ 					x: xVal,
+ 					y: yVal
+ 				});
+ 				xVal++;
+ 			// };
+ 			if (dps.length > dataLength)
+			{
+				dps.shift();				
+			}
+			
+			chart.render();		
+
+		};
+
+		// generates first set of dataPoints
+		updateChart(dataLength); 
+
+		// update chart after specified time. 
+		setInterval(function(){updateChart()}, updateInterval);
+	});
+
+	}
+	</script>
+	<script type="text/javascript" src="canvasjs.min.js"></script>
+</head>
+<body>
+	<div id="chartContainer" style="height: 300px; width:100%;">
+	</div>
+</body>
+</html>
